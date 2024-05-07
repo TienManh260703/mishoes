@@ -20,7 +20,7 @@ public class BaseEntity {
     LocalDateTime createdAt;
     @Column(name = "updated_at")
     LocalDateTime updatedAt;
-    Integer deleted=0;
+    Integer status=0;
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
@@ -29,7 +29,6 @@ public class BaseEntity {
 
     @PreUpdate
     protected void onUpdate() {
-        System.out.println("chyja update");
         updatedAt = LocalDateTime.now();
     }
 }

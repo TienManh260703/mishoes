@@ -29,29 +29,26 @@ public class ProductController {
         List<Product> products = productService.getAllProducts();
 
         return ResponseEntity.ok().body(products.stream().map(
-                        product -> ProductResponse.builder()
-                                .id(product.getId())
-                                .code(product.getCode())
-                                .name(product.getName())
-                                .createdAt(product.getCreatedAt())
-                                .updatedAt(product.getUpdatedAt())
-                                .build())
-                .toList()
-        );
+                product ->
+                        productMapper.toProductResponse(product)
+        ).toList());
     }
 
     @PostMapping
-    public ResponseEntity<ProductResponse> createProduct(@Valid @RequestBody ProductDTO productDTO) {
+    public ResponseEntity<?> createProduct(
+            @Valid @RequestBody ProductDTO productDTO) {
         return ResponseEntity.ok().body(productMapper.toProductResponse(productService.createProduct(productDTO)));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateProduct( @PathVariable String id,@Valid @RequestBody ProductDTO productDTO) {
+    public ResponseEntity<?> updateProduct(
+            @PathVariable String id, @Valid @RequestBody ProductDTO productDTO) {
         return ResponseEntity.ok().body(productService.updateProduct(id, productDTO));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteProduct(@PathVariable String id) {
+    public ResponseEntity<String> deleteProduct(
+            @PathVariable String id) {
         return ResponseEntity.ok().body(productService.deleteProduct(id));
     }
 }

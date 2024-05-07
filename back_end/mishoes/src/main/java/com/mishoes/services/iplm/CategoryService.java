@@ -1,6 +1,8 @@
 package com.mishoes.services.iplm;
 
 import com.mishoes.dtos.CategoryDTO;
+import com.mishoes.exceptions.AppException;
+import com.mishoes.exceptions.ErrorCode;
 import com.mishoes.mappers.CategoryMapper;
 import com.mishoes.models.Category;
 import com.mishoes.repositories.CategoryRepository;
@@ -22,7 +24,13 @@ public class CategoryService implements ICategoryService {
 
     @Override
     public Category createCategory(CategoryDTO dto) {
-        return null;
+        if(categoryRepository.existsByCode(dto.getCode())){
+            throw  new AppException(ErrorCode.CATEGORY_EXISTED);
+        }
+        if(categoryRepository.existsByName(dto.getName())){
+            throw   new AppException(ErrorCode.CATEGORY_EXISTED);
+        }
+        return categoryRepository.save(categoryMapper.toCategory(dto));
     }
 
     @Override
@@ -42,10 +50,11 @@ public class CategoryService implements ICategoryService {
     public String deleteCategory(String id) {
         Optional<Category> categoryOptional = categoryRepository.findById(id);
         if (categoryOptional.isPresent()) {
-            throw new RuntimeException("Cannot find category with id : " + id);
+            categoryRepository.deleteById(id);
+            return "Category deleted";
         }
-        categoryRepository.deleteById(id);
-        return "Category deleted";
+        return "Delete failed category";
+
     }
 
     @Override

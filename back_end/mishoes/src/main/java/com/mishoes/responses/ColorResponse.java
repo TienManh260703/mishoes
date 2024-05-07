@@ -4,16 +4,17 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
+
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class BrandResponse {
+public class ColorResponse {
     String id;
     String code;
-    String name ;
+    String name;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
     Integer status;

@@ -48,19 +48,20 @@ public class BrandService implements IBrandService {
     public String deleteBrand(String id) {
         Optional<Brand> existingBrand = brandRepository.findById(id);
         if (existingBrand.isPresent()) {
-            brandRepository.delete(existingBrand.get());
+            brandRepository.deleteById(id);
+            return "Deleted Brand";
         }
-        return "Cannot find brand with id: " + id;
+        return "Delete failed brand";
     }
 
     @Override
     public Brand updateBrand(String id, BrandDTO brandDTO) {
-        Brand existingBrand = brandRepository.findById(id).orElseThrow( ()->
+        Brand existingBrand = brandRepository.findById(id).orElseThrow(() ->
                 new RuntimeException("Cannot find brand with id: " + id));
         if (brandRepository.existsByName(brandDTO.getName().trim())) {
-           throw  new RuntimeException("Brand name already exists");
+            throw new RuntimeException("Brand name already exists");
         }
-        brandMapper.updateBrand(existingBrand , brandDTO);
+        brandMapper.updateBrand(existingBrand, brandDTO);
         return brandRepository.save(existingBrand);
     }
 

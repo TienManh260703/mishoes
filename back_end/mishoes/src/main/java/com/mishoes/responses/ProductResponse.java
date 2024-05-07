@@ -1,6 +1,5 @@
 package com.mishoes.responses;
 
-import jakarta.persistence.Column;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -18,4 +17,5 @@ public class ProductResponse {
     String name ;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
+    Integer status;
 }

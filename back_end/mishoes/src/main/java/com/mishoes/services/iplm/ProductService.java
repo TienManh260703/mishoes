@@ -61,6 +61,6 @@ public class ProductService implements IProductService {
             productRepository.deleteById(productOptional.get().getId());
             return "Product deleted";
         }
-        return "Cannot find product with id : " + id;
+        return "Delete failed product";
     }
 }

@@ -17,6 +17,7 @@ public class ProductDetail extends BaseEntity {
     @Column(nullable = false,length = 100, unique = true)
     String name;
     Float price;
+    @Column(name = "import_price")
     Float importPrice;
     Integer quantity;
     String description;

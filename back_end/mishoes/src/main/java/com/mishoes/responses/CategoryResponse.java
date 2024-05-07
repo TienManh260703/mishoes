@@ -14,4 +14,5 @@ public class CategoryResponse {
     String name ;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
+    Integer status;
 }

@@ -28,29 +28,27 @@ public class BrandController {
         return ResponseEntity.ok().body(
                 brandService.getAllBrands().stream()
                         .map(
-                                brand -> BrandResponse.builder()
-                                        .id(brand.getId())
-                                        .code(brand.getCode())
-                                        .name(brand.getName())
-                                        .createdAt(brand.getCreatedAt())
-                                        .updatedAt(brand.getUpdatedAt())
-                                        .build()
+                                brand -> brandMapper.toBrandResponse(brand)
                         ).toList());
 
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getBrandById(@PathVariable String id) {
+    public ResponseEntity<?> getBrandById(
+            @PathVariable String id) {
         return ResponseEntity.ok().body(brandService.getBrandById(id));
     }
 
     @PostMapping
-    public ResponseEntity<?> createBrand(@Valid @RequestBody BrandDTO brandDTO) {
+    public ResponseEntity<?> createBrand(
+            @Valid @RequestBody BrandDTO brandDTO) {
         return ResponseEntity.ok().body(brandService.createBrand(brandDTO));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateBrand(@PathVariable String id, @Valid @RequestBody BrandDTO brandDTO) {
+    public ResponseEntity<?> updateBrand(
+            @PathVariable String id,
+            @Valid @RequestBody BrandDTO brandDTO) {
         return ResponseEntity.ok().body(brandService.updateBrand(id, brandDTO));
     }
 }

@@ -17,7 +17,14 @@ import java.time.LocalDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "_order")
 @Entity
-public class Order extends BaseEntity {
+public class Order {
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    String id;
+    @Column(name = "created_at")
+    LocalDateTime createdAt;
+    @Column(name = "updated_at")
+    LocalDateTime updatedAt;
     @Column(length = 50, unique = true, nullable = false)
     String code;
     @ManyToOne(fetch = FetchType.LAZY)
@@ -44,4 +51,15 @@ public class Order extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 50)
     private EnumStatus status;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }

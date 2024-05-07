@@ -3,13 +3,11 @@ package com.mishoes.mappers;
 import com.mishoes.dtos.ProductDTO;
 import com.mishoes.models.Product;
 import com.mishoes.responses.ProductResponse;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+
 @Component
-@Getter
-@Setter
 public class ProductMapper {
     public ProductResponse toProductResponse(Product product) {
         return ProductResponse.builder()
@@ -18,6 +16,7 @@ public class ProductMapper {
                 .name(product.getName())
                 .createdAt(product.getCreatedAt())
                 .updatedAt(product.getUpdatedAt())
+                .status(product.getStatus())
                 .build();
     }
 
@@ -30,9 +29,7 @@ public class ProductMapper {
     }
 
     public void updateProduct(Product product, ProductDTO productDTO) {
-        Product
-                .builder()
-                .name(productDTO.getName())
-                .build();
+        product.setName(productDTO.getName());
+        product.setUpdatedAt(LocalDateTime.now());
     }
 }

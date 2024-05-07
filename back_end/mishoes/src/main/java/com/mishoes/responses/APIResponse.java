@@ -1,20 +1,18 @@
 package com.mishoes.responses;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class BrandResponse {
-    String id;
-    String code;
-    String name ;
-    LocalDateTime createdAt;
-    LocalDateTime updatedAt;
-    Integer status;
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class APIResponse<T> {
+    int code = 1000;
+    String message;
+    T result;
 }
