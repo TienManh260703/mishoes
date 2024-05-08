@@ -40,7 +40,7 @@ public class ProductDetail extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sole_id")
     Sole soleId;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY )
     @JoinColumn(name = "brand_id")
     Brand brandId;
 }
