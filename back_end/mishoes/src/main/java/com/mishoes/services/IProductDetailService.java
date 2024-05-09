@@ -1,16 +1,25 @@
 package com.mishoes.services;
 
-import com.mishoes.dtos.ProductDetailDTO;
-import com.mishoes.models.Product;
-import com.mishoes.models.ProductDetail;
-import com.mishoes.responses.ProductDetailResponse;
+import com.mishoes.dtos.requests.create.product.CreateProductDetailRequest;
+import com.mishoes.dtos.requests.update.product.UpdateProductDetailRequest;
+import com.mishoes.entity.ProductDetail;
+import com.mishoes.dtos.responses.product.ProductDetailResponse;
+import com.mishoes.exceptions.DataNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+import java.util.List;
+
 public interface IProductDetailService {
-    ProductDetail createProductDetail (ProductDetailDTO dto);
-    ProductDetail updateProductDetail (String id, ProductDetailDTO  dto);
-    ProductDetail getProductDetail (String id);
-    Page<ProductDetailResponse> getProductsDetail (PageRequest pageRequest);
-    String deleteProductDetail (String id);
+    List<ProductDetail> createProductDetail(CreateProductDetailRequest request) throws DataNotFoundException;
+
+    ProductDetail updateProductDetail(String id, UpdateProductDetailRequest request) throws DataNotFoundException;
+
+    ProductDetail getProductDetail(String id);
+
+    Page<ProductDetailResponse> getProductsDetail(PageRequest pageRequest);
+
+    List<ProductDetailResponse> getProductsDetailByProductId(String productId) throws DataNotFoundException;
+
+    String deleteProductDetail(String id);
 }

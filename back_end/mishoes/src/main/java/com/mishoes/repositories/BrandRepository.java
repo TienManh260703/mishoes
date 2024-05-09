@@ -1,6 +1,6 @@
 package com.mishoes.repositories;
 
-import com.mishoes.models.Brand;
+import com.mishoes.entity.Brand;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

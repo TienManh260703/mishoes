@@ -1,14 +1,14 @@
 package com.mishoes.services;
 
-import com.mishoes.dtos.SoleDTO;
-import com.mishoes.models.Sole;
+import com.mishoes.dtos.requests.create.product.SoleRequest;
+import com.mishoes.entity.Sole;
 
 import java.util.List;
 
 public interface ISoleService {
-    Sole createSole(SoleDTO dto);
+    Sole createSole(SoleRequest dto);
 
-    Sole updateSole(String id, SoleDTO dto);
+    Sole updateSole(String id, SoleRequest dto);
 
     Sole getSole(String id);
 

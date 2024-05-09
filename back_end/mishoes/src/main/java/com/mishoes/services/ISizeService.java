@@ -1,14 +1,14 @@
 package com.mishoes.services;
 
-import com.mishoes.dtos.SizeDTO;
-import com.mishoes.models.Size;
+import com.mishoes.dtos.requests.create.product.SizeRequest;
+import com.mishoes.entity.Size;
 
 import java.util.List;
 
 public interface ISizeService {
-    Size createSize(SizeDTO dto);
+    Size createSize(SizeRequest dto);
 
-    Size updateSize(String id, SizeDTO dto);
+    Size updateSize(String id, SizeRequest dto);
 
     Size getSize(String id);
 

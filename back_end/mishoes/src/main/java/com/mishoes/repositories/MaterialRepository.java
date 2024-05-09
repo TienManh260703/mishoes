@@ -1,6 +1,6 @@
 package com.mishoes.repositories;
 
-import com.mishoes.models.Material;
+import com.mishoes.entity.Material;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

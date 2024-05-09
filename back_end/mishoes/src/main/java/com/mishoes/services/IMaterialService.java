@@ -1,15 +1,15 @@
 package com.mishoes.services;
 
 
-import com.mishoes.dtos.MaterialDTO;
-import com.mishoes.models.Material;
+import com.mishoes.dtos.requests.create.product.MaterialRequest;
+import com.mishoes.entity.Material;
 
 import java.util.List;
 
 public interface IMaterialService {
-    Material createMaterial(MaterialDTO dto);
+    Material createMaterial(MaterialRequest dto);
 
-    Material updateMaterial(String id, MaterialDTO dto);
+    Material updateMaterial(String id, MaterialRequest dto);
 
     List<Material> getMaterials();
 

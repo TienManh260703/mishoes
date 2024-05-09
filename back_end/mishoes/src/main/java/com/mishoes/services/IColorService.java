@@ -1,13 +1,13 @@
 package com.mishoes.services;
 
-import com.mishoes.dtos.ColorDTO;
-import com.mishoes.models.Color;
+import com.mishoes.dtos.requests.create.product.ColorRequest;
+import com.mishoes.entity.Color;
 
 import java.util.List;
 
 public interface IColorService {
-    Color createColor (ColorDTO dto);
-    Color updateColor (String id , ColorDTO dto);
+    Color createColor (ColorRequest dto);
+    Color updateColor (String id , ColorRequest dto);
     List<Color> getColors ();
     Color getColor (String id);
     String deletedColor (String id);

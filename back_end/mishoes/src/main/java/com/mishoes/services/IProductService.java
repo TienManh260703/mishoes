@@ -1,7 +1,7 @@
 package com.mishoes.services;
 
-import com.mishoes.dtos.ProductDTO;
-import com.mishoes.models.Product;
+import com.mishoes.dtos.requests.create.product.ProductRequest;
+import com.mishoes.entity.Product;
 
 import java.util.List;
 
@@ -10,9 +10,9 @@ public interface IProductService {
 
     List<Product> getAllProducts();
 
-    Product createProduct(ProductDTO productDTO);
+    Product createProduct(ProductRequest productDTO);
 
-    Product updateProduct(String id,  ProductDTO productDTO);
+    Product updateProduct(String id,  ProductRequest productDTO);
 
     String deleteProduct(String  id);
 }
