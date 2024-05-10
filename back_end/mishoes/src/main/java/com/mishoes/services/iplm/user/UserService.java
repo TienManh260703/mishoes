@@ -48,20 +48,25 @@ public class UserService implements IUserService {
         if (userRepository.existsByPhone(request.getPhone())) {
             throw new RuntimeException("Phone number already exist");
         }
-        User user =   userMapper.createUser(request);
+        User user = userMapper.createUser(request);
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);// 10 độ mạnh của mã hóa
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         return userRepository.save(
-              user
+                user
         );
     }
 
     @Override
     public User updateUSer(String id, UpdateUerRequest request) throws DataNotFoundException {
-        User existingUer = userRepository.findById(id).orElseThrow(() ->
-                new DataNotFoundException("Cannot find user with id : " + id)
+        User existingUer = userRepository.findById(id).orElseThrow(() -> {
+                    throw new DataNotFoundException("Cannot find user with id : " + id);
+                }
         );
+        // Xử lý trùng username và password ?? -> chưa làm
+
         userMapper.updateUser(existingUer, request);
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+        existingUer.setPassword(passwordEncoder.encode(request.getPassword()));
         return userRepository.save(existingUer);
     }
 

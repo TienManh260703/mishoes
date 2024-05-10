@@ -56,7 +56,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable String id, @RequestBody UpdateUerRequest request) throws DataNotFoundException {
+    public ResponseEntity<?> updateUser(@PathVariable String id, @RequestBody UpdateUerRequest request)  {
         return ResponseEntity.ok().body(
                 userMapper.toUserResponse(
                         userService.updateUSer(id, request)

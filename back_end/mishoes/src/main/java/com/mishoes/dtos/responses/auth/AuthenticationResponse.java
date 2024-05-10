@@ -10,5 +10,6 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AuthenticationResponse {
-    boolean authenticated;// true : username , password -> Đúng
+    String token;
+    boolean authenticated;// true : username , password -> Đúng (Có thể bỏ)
 }
