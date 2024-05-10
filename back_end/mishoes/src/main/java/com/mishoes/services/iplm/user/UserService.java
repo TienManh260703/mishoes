@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,15 +42,24 @@ public class UserService implements IUserService {
 
     @Override
     public User createUser(CreateUserRequest request) {
+        if (userRepository.existsByUserName(request.getUserName())) {
+            throw new RuntimeException("User name already exist");
+        }
+        if (userRepository.existsByPhone(request.getPhone())) {
+            throw new RuntimeException("Phone number already exist");
+        }
+        User user =   userMapper.createUser(request);
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);// 10 độ mạnh của mã hóa
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
         return userRepository.save(
-                userMapper.createUser(request)
+              user
         );
     }
 
     @Override
     public User updateUSer(String id, UpdateUerRequest request) throws DataNotFoundException {
         User existingUer = userRepository.findById(id).orElseThrow(() ->
-             new DataNotFoundException("Cannot find user with id : " + id)
+                new DataNotFoundException("Cannot find user with id : " + id)
         );
         userMapper.updateUser(existingUer, request);
         return userRepository.save(existingUer);
