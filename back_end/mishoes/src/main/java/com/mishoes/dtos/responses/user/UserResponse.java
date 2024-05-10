@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -27,10 +28,10 @@ public class UserResponse {
     String address;
     boolean gender;
     @JsonProperty(namespace = "date_of_birth")
-    LocalDateTime dateOfBirth;
+    LocalDate dateOfBirth;
     @JsonProperty(namespace = "create_at")
     LocalDateTime createAt;
     @JsonProperty(namespace = "update_at")
     LocalDateTime updateAt;
-
+    Integer status;
 }

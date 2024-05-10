@@ -1,6 +1,7 @@
 package com.mishoes.exceptions;
 
 import com.mishoes.dtos.responses.APIResponse;
+import org.hibernate.engine.jdbc.spi.SqlExceptionHelper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -51,5 +52,7 @@ public class GlobalExceptionHandler {
               "The name already exists"
         );
     }
+
+
 
 }

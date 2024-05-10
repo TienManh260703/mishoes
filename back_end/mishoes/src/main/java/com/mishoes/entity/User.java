@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 @Getter
 @Setter
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 @Table(name = "user")
 @Entity
 public class User extends BaseEntity {
-    String code  ;
+    String code ;
     @Column(unique = true, length = 100)
     String userName;
     String password;
@@ -28,7 +29,7 @@ public class User extends BaseEntity {
     String address;
     boolean gender;
     @Column(name = "data_of_birth", nullable = false)
-    LocalDateTime dateOfBirth;
+    LocalDate dateOfBirth;
 //    @ManyToOne
 //    @JoinColumn(name = "role_id")
 //    com.mishoes.entity.Role roleId;

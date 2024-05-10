@@ -5,6 +5,7 @@ import jakarta.persistence.Column;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -12,7 +13,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UpdateUerRequest {
     String code;
@@ -28,7 +28,7 @@ public class UpdateUerRequest {
     String address;
     boolean gender;
     @JsonProperty(namespace = "date_of_birth")
-    LocalDateTime dateOfBirth;
+    LocalDate dateOfBirth;
     @JsonProperty(namespace = "create_at")
     LocalDateTime createAt;
     @JsonProperty(namespace = "update_at")

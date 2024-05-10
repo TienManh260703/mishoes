@@ -7,12 +7,11 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CreateUserRequest {
@@ -30,5 +29,5 @@ public class CreateUserRequest {
     String phone;
     String address;
     boolean gender;
-    LocalDateTime dateOfBirth;
+    LocalDate dateOfBirth;
 }

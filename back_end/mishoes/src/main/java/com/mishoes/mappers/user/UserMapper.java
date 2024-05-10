@@ -6,24 +6,35 @@ import com.mishoes.dtos.responses.user.UserResponse;
 import com.mishoes.entity.User;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+
+import static com.mishoes.common.GenCode.generateUSER;
+
 @Component
 public class UserMapper {
     public UserResponse toUserResponse(User user) {
-        return UserResponse.builder()
-                .code(user.getCode())
-                .userName(user.getUserName())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .email(user.getEmail())
-                .phone(user.getPhone())
-                .address(user.getAddress())
-                .gender(user.isGender())
-                .dateOfBirth(user.getDateOfBirth())
-                .build();
+        UserResponse response = new UserResponse();
+        response.setId(user.getId());
+        response.setCode(user.getCode());
+        response.setUserName(user.getUserName());
+        response.setPassword(user.getPassword());
+        response.setFirstName(user.getFirstName());
+        response.setLastName(user.getLastName());
+        response.setEmail(user.getEmail());
+        response.setPhone(user.getPhone());
+        response.setAddress(user.getAddress());
+        response.setGender(user.isGender());
+        response.setDateOfBirth(user.getDateOfBirth());
+        response.setCreateAt(user.getCreatedAt());
+        response.setUpdateAt(user.getUpdatedAt());
+        response.setStatus(user.getStatus());
+        return response;
     }
-    public User  createUser (CreateUserRequest request){
+
+    public User createUser(CreateUserRequest request) {
         // code ben servie
         return User.builder()
+                .code(generateUSER())
                 .userName(request.getUserName())
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
@@ -35,7 +46,8 @@ public class UserMapper {
                 .dateOfBirth(request.getDateOfBirth())
                 .build();
     }
-    public void  updateUser (User user, UpdateUerRequest request){
+
+    public void updateUser(User user, UpdateUerRequest request) {
         user.setUserName(request.getUserName());
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
@@ -45,5 +57,6 @@ public class UserMapper {
         user.setAddress(request.getAddress());
         user.setGender(request.isGender());
         user.setDateOfBirth(request.getDateOfBirth());
+        user.setUpdatedAt(LocalDateTime.now());
     }
 }
