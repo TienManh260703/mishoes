@@ -1,10 +1,12 @@
 package com.mishoes.controllers.auth;
 
-import com.mishoes.dtos.requests.auth.AuthenticationRequest;
-import com.mishoes.dtos.requests.auth.IntrospectRequest;
-import com.mishoes.dtos.responses.auth.AuthenticationResponse;
-import com.mishoes.exceptions.DataNotFoundException;
-import com.mishoes.services.iplm.auth.AuthenticationService;
+import com.mishoes.dto.request.auth.AuthenticationRequest;
+import com.mishoes.dto.request.auth.IntrospectRequest;
+import com.mishoes.dto.response.auth.AuthenticationResponse;
+import com.mishoes.exception.DataNotFoundException;
+
+import com.mishoes.service.iplm.auth.AuthenticationService;
+
 import com.nimbusds.jose.JOSEException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
