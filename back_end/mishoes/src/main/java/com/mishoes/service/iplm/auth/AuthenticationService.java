@@ -4,6 +4,7 @@ import com.mishoes.dto.request.auth.AuthenticationRequest;
 import com.mishoes.dto.request.auth.IntrospectRequest;
 import com.mishoes.dto.response.auth.AuthenticationResponse;
 import com.mishoes.dto.response.auth.IntrospectResponse;
+import com.mishoes.entity.User;
 import com.mishoes.exception.AppException;
 import com.mishoes.exception.DataNotFoundException;
 import com.mishoes.exception.ErrorCode;
@@ -22,11 +23,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.Date;
+import java.util.StringJoiner;
 
 @Service
 @RequiredArgsConstructor
@@ -39,8 +43,7 @@ public class AuthenticationService implements IAuthenticationService {
 
     @Override
     public AuthenticationResponse authentication(AuthenticationRequest request) {
-        var user = userRepository.findByUserName(request.getUsername()).orElseThrow(() ->
-                {
+        var user = userRepository.findByUserName(request.getUsername()).orElseThrow(() -> {
                     throw new DataNotFoundException("User name not found");
                 }
 
@@ -51,7 +54,7 @@ public class AuthenticationService implements IAuthenticationService {
         if (!authenticated) {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
-        var token = generateToken(request.getUsername(), user.getId());
+        var token = generateToken(user);
         return AuthenticationResponse.builder()
                 .token(token)
                 .authenticated(true)
@@ -65,7 +68,6 @@ public class AuthenticationService implements IAuthenticationService {
         JWSVerifier verifier = new MACVerifier(KEY.getBytes());
         SignedJWT signedJWT = SignedJWT.parse(token);
         //
-
         Date expiredTime = signedJWT.getJWTClaimsSet().getExpirationTime();
         var verified = signedJWT.verify(verifier);
         return IntrospectResponse
@@ -75,15 +77,16 @@ public class AuthenticationService implements IAuthenticationService {
     }
 
 
-    private String generateToken(String username, String id) {
+    private String generateToken(User user) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
         // Tạo đc payload cần có claim
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(username)
+                .subject(user.getUserName())
                 .issuer("manhntph37150")
                 .issueTime(new Date())
                 .expirationTime(Date.from(Instant.now().plus(24, ChronoUnit.HOURS)))
-                .claim("userId", id)
+                .claim("userId", user.getId())
+                .claim("scope", buildScope(user))
                 .build();
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
         JWSObject jwsObject = new JWSObject(header, payload);
@@ -95,5 +98,12 @@ public class AuthenticationService implements IAuthenticationService {
             System.err.println("Cannot create token" + e.getMessage());
             throw new RuntimeException("Create token fail");
         }
+    }
+
+    private String buildScope(User user) {
+        StringJoiner stringJoiner = new StringJoiner(" ");
+        if (!CollectionUtils.isEmpty(user.getRoles()))
+            user.getRoles().forEach(stringJoiner::add);
+        return stringJoiner.toString();
     }
 }

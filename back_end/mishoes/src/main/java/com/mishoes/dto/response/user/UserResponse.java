@@ -6,6 +6,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -33,5 +34,6 @@ public class UserResponse {
     LocalDateTime createAt;
     @JsonProperty(namespace = "update_at")
     LocalDateTime updateAt;
+    Set<String> roles;
     Integer status;
 }

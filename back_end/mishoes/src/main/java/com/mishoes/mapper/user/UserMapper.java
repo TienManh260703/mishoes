@@ -17,7 +17,7 @@ public class UserMapper {
         response.setId(user.getId());
         response.setCode(user.getCode());
         response.setUserName(user.getUserName());
-        response.setPassword(user.getPassword());
+
         response.setFirstName(user.getFirstName());
         response.setLastName(user.getLastName());
         response.setEmail(user.getEmail());
@@ -27,6 +27,7 @@ public class UserMapper {
         response.setDateOfBirth(user.getDateOfBirth());
         response.setCreateAt(user.getCreatedAt());
         response.setUpdateAt(user.getUpdatedAt());
+        response.setRoles(user.getRoles());
         response.setStatus(user.getStatus());
         return response;
     }
@@ -38,7 +39,6 @@ public class UserMapper {
                 .userName(request.getUserName())
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
-                .password(request.getPassword())
                 .email(request.getEmail())
                 .phone(request.getPhone())
                 .address(request.getAddress())
@@ -51,7 +51,6 @@ public class UserMapper {
         user.setUserName(request.getUserName());
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
-        user.setPassword(request.getPassword());
         user.setEmail(request.getEmail());
         user.setPhone(request.getPhone());
         user.setAddress(request.getAddress());

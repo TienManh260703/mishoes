@@ -1,22 +1,25 @@
 package com.mishoes.entity;
 
 import com.mishoes.entity.base.BaseEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.Set;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@FieldDefaults(level =  AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "user")
 @Entity
 public class User extends BaseEntity {
-    String code ;
+    String code;
     @Column(unique = true, length = 100)
     String userName;
     String password;
@@ -30,7 +33,6 @@ public class User extends BaseEntity {
     boolean gender;
     @Column(name = "data_of_birth", nullable = false)
     LocalDate dateOfBirth;
-//    @ManyToOne
-//    @JoinColumn(name = "role_id")
-//    com.mishoes.entity.Role roleId;
+    @Column(name = "roles")
+    Set<String> roles;
 }

@@ -4,6 +4,7 @@ import com.mishoes.dto.request.create.user.CreateUserRequest;
 import com.mishoes.dto.request.update.user.UpdateUerRequest;
 import com.mishoes.dto.response.user.UserResponse;
 import com.mishoes.entity.User;
+import com.mishoes.enums.Role;
 import com.mishoes.exception.DataAlreadyExistsException;
 import com.mishoes.exception.DataNotFoundException;
 import com.mishoes.mapper.user.UserMapper;
@@ -18,6 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.Optional;
 
 @Service
@@ -26,9 +28,9 @@ import java.util.Optional;
 public class UserService implements IUserService {
     UserRepository userRepository;
     UserMapper userMapper;
-
+    PasswordEncoder passwordEncoder;
     @Override
-    public User getUser(String id) throws DataNotFoundException {
+    public User getUser(String id)  {
         return userRepository.findById(id).orElseThrow(() ->
                 new DataNotFoundException("Cannot find user with id : " + id));
     }
@@ -49,8 +51,10 @@ public class UserService implements IUserService {
             throw new DataAlreadyExistsException("Phone number already exist");
         }
         User user = userMapper.createUser(request);
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);// 10 độ mạnh của mã hóa
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+        HashSet<String> roles = new HashSet<>();
+        roles.add(Role.USER.name());
+        user.setRoles(roles);
         return userRepository.save(
                 user
         );
@@ -65,7 +69,6 @@ public class UserService implements IUserService {
         // Xử lý trùng username và password ?? -> chưa làm
 
         userMapper.updateUser(existingUer, request);
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         existingUer.setPassword(passwordEncoder.encode(request.getPassword()));
         return userRepository.save(existingUer);
     }

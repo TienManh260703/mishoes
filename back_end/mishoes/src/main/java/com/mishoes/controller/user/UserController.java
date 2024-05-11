@@ -10,10 +10,12 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +24,7 @@ import java.util.List;
 @RequestMapping("${api.prefix}/users")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Slf4j
 public class UserController {
     UserService userService;
     UserMapper userMapper;
@@ -38,6 +41,10 @@ public class UserController {
             @RequestParam("page") int page,
             @RequestParam("limit") int limit
     ) {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.info("Username : {} ", authentication.getName());
+        authentication.getAuthorities().forEach(grantedAuthority -> log.info( grantedAuthority.getAuthority()));
+
         PageRequest pageRequest = PageRequest.of(page, limit, Sort.by("createdAt"));
         Page<UserResponse> userPage = userService.getUsers(pageRequest);
         // chỉnh sửa khi có FE
@@ -56,7 +63,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable String id, @RequestBody UpdateUerRequest request)  {
+    public ResponseEntity<?> updateUser(@PathVariable String id, @RequestBody UpdateUerRequest request) {
         return ResponseEntity.ok().body(
                 userMapper.toUserResponse(
                         userService.updateUSer(id, request)

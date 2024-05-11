@@ -1,6 +1,6 @@
 package com.mishoes.entity;
 
-import com.mishoes.entity.base.EnumStatus;
+import com.mishoes.enums.EnumStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
