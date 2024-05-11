@@ -13,7 +13,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handlerRuntimeException(RuntimeException exception) {
         return ResponseEntity.badRequest().body(
-                exception.getMessage() +"Lỗi khác "
+                exception.getMessage() + "Lỗi khác "
         );
     }
 
@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
         ErrorCode errorCode = exception.getErrorCode();
         return ResponseEntity.badRequest().body(APIResponse.builder()
                 .code(errorCode.getCode())
-                .message(exception.getMessage() +"App")
+                .message(exception.getMessage() + "App")
                 .build());
     }
 
@@ -38,7 +38,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handlerIllegalStateException(
             IllegalStateException exception) {
         return ResponseEntity.badRequest().body(
-                exception.getMessage() +"Lỗi IllegalStateException");
+                exception.getMessage() + "Lỗi IllegalStateException");
     }
 
     @ExceptionHandler(DataNotFoundException.class)
@@ -46,13 +46,20 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(
                 exception.getMessage());
     }
+
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<?> handleDataIntegrityViolationException (DataIntegrityViolationException exception){
+    public ResponseEntity<?> handleDataIntegrityViolationException(DataIntegrityViolationException exception) {
         return ResponseEntity.badRequest().body(
-              "The name already exists"
+                "The name already exists"
         );
     }
 
+    @ExceptionHandler(DataAlreadyExistsException.class)
+    public ResponseEntity<?> handleDataAlreadyExistException(DataAlreadyExistsException exception) {
+        return ResponseEntity.badRequest().body(
+                exception.getMessage()
+        );
+    }
 
 
 }

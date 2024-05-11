@@ -4,6 +4,7 @@ import com.mishoes.dtos.requests.create.user.CreateUserRequest;
 import com.mishoes.dtos.requests.update.user.UpdateUerRequest;
 import com.mishoes.dtos.responses.user.UserResponse;
 import com.mishoes.entity.User;
+import com.mishoes.exceptions.DataAlreadyExistsException;
 import com.mishoes.exceptions.DataNotFoundException;
 import com.mishoes.mappers.user.UserMapper;
 import com.mishoes.repositories.UserRepository;
@@ -43,10 +44,10 @@ public class UserService implements IUserService {
     @Override
     public User createUser(CreateUserRequest request) {
         if (userRepository.existsByUserName(request.getUserName())) {
-            throw new RuntimeException("User name already exist");
+            throw new DataAlreadyExistsException("User name already exist");
         }
         if (userRepository.existsByPhone(request.getPhone())) {
-            throw new RuntimeException("Phone number already exist");
+            throw new DataAlreadyExistsException("Phone number already exist");
         }
         User user = userMapper.createUser(request);
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);// 10 độ mạnh của mã hóa

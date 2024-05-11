@@ -1,6 +1,8 @@
 package com.mishoes.services.iplm.product;
 
 import com.mishoes.dtos.requests.create.product.SoleRequest;
+import com.mishoes.exceptions.DataAlreadyExistsException;
+import com.mishoes.exceptions.DataNotFoundException;
 import com.mishoes.mappers.product.SoleMapper;
 import com.mishoes.entity.Sole;
 import com.mishoes.repositories.SoleRepository;
@@ -23,10 +25,10 @@ public class SoleService implements ISoleService {
     @Override
     public Sole createSole(SoleRequest dto) {
         if (soleRepository.existsByCode(dto.getCode())) {
-            throw new RuntimeException("Sole code already exist");
+            throw new DataAlreadyExistsException("Sole code already exist");
         }
         if (soleRepository.existsByName(dto.getName())) {
-            throw new RuntimeException("Sole name already exist");
+            throw new DataAlreadyExistsException("Sole name already exist");
         }
         return soleRepository.save(
                 soleMapper.toSole(dto)
@@ -36,10 +38,10 @@ public class SoleService implements ISoleService {
     @Override
     public Sole updateSole(String id, SoleRequest dto) {
         if (soleRepository.existsByName(dto.getName())) {
-            throw new RuntimeException("Sole name already exist");
+            throw new DataAlreadyExistsException("Sole name already exist");
         }
         Sole existingSole = soleRepository.findById(id).orElseThrow(()-> {
-            throw  new RuntimeException("Cannot find sole with id : "+id);
+            throw  new DataNotFoundException("Cannot find sole with id : "+id);
         });
         soleMapper.updateSole(existingSole  , dto);
         return soleRepository.save(
@@ -50,7 +52,7 @@ public class SoleService implements ISoleService {
     @Override
     public Sole getSole(String id) {
         return soleRepository.findById(id).orElseThrow(()->{
-            throw  new RuntimeException("Cannot find sole with id : "+id);
+            throw  new DataNotFoundException("Cannot find sole with id : "+id);
         });
     }
 

@@ -115,7 +115,7 @@ public class ProductDetailService implements IProductDetailService {
     @Override
     public ProductDetail getProductDetail(String id) {
         return productDetailRepository.findById(id).orElseThrow(() -> {
-            throw new RuntimeException("Cannot find product detail with id : " + id);
+            throw new DataNotFoundException("Cannot find product detail with id : " + id);
         });
     }
 

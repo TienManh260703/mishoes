@@ -2,6 +2,8 @@ package com.mishoes.services.iplm.product;
 
 import com.mishoes.dtos.requests.create.product.BrandRequest;
 import com.mishoes.entity.Brand;
+import com.mishoes.exceptions.DataAlreadyExistsException;
+import com.mishoes.exceptions.DataNotFoundException;
 import com.mishoes.mappers.product.BrandMapper;
 import com.mishoes.repositories.BrandRepository;
 import com.mishoes.services.IBrandService;
@@ -30,7 +32,7 @@ public class BrandService implements IBrandService {
     @Override
     public Brand getBrandById(String id) {
         return brandRepository.findById(id).orElseThrow(() -> {
-                    throw new RuntimeException("Cannot find brand with id: " + id);
+                    throw new DataNotFoundException("Cannot find brand with id: " + id);
                 }
         );
     }
@@ -38,10 +40,10 @@ public class BrandService implements IBrandService {
     @Override
     public Brand createBrand(BrandRequest brandDTO) {
         if (brandRepository.existsByCode(brandDTO.getCode())) {
-            throw new RuntimeException("Brand already exists");
+            throw new DataAlreadyExistsException("Brand already exists");
         }
         if (brandRepository.existsByName(brandDTO.getName())) {
-            throw new RuntimeException("Brand already exists");
+            throw new DataAlreadyExistsException("Brand already exists");
         }
         return brandRepository.save(brandMapper.toBrand(brandDTO));
     }
@@ -59,9 +61,9 @@ public class BrandService implements IBrandService {
     @Override
     public Brand updateBrand(String id, BrandRequest brandDTO) {
         Brand existingBrand = brandRepository.findById(id).orElseThrow(() ->
-                new RuntimeException("Cannot find brand with id: " + id));
+                new DataNotFoundException("Cannot find brand with id: " + id));
         if (brandRepository.existsByName(brandDTO.getName().trim())) {
-            throw new RuntimeException("Brand name already exists");
+            throw new DataAlreadyExistsException("Brand name already exists");
         }
         brandMapper.updateBrand(existingBrand, brandDTO);
         return brandRepository.save(existingBrand);

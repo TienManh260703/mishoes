@@ -2,6 +2,8 @@ package com.mishoes.services.iplm.product;
 
 import com.mishoes.dtos.requests.create.product.CategoryRequest;
 import com.mishoes.exceptions.AppException;
+import com.mishoes.exceptions.DataAlreadyExistsException;
+import com.mishoes.exceptions.DataNotFoundException;
 import com.mishoes.exceptions.ErrorCode;
 import com.mishoes.mappers.product.CategoryMapper;
 import com.mishoes.entity.Category;
@@ -25,10 +27,10 @@ public class CategoryService implements ICategoryService {
     @Override
     public Category createCategory(CategoryRequest dto) {
         if(categoryRepository.existsByCode(dto.getCode())){
-            throw  new AppException(ErrorCode.CATEGORY_EXISTED);
+            throw  new DataAlreadyExistsException(ErrorCode.CATEGORY_EXISTED.toString());
         }
         if(categoryRepository.existsByName(dto.getName())){
-            throw   new AppException(ErrorCode.CATEGORY_EXISTED);
+            throw   new DataNotFoundException(ErrorCode.CATEGORY_EXISTED.toString());
         }
         return categoryRepository.save(categoryMapper.toCategory(dto));
     }
@@ -37,10 +39,10 @@ public class CategoryService implements ICategoryService {
     public Category updateCategory(String id, CategoryRequest dto) {
         Category existingCategory = categoryRepository.findById(id).orElseThrow(
                 () -> {
-                    throw new RuntimeException("Cannot find category with id : " + id);
+                    throw new DataNotFoundException("Cannot find category with id : " + id);
                 });
         if (categoryRepository.existsByName(dto.getName().trim())) {
-            throw new RuntimeException("Category name already exists");
+            throw new DataAlreadyExistsException("Category name already exists");
         }
         categoryMapper.updateCategory(existingCategory, dto);
         return categoryRepository.save(existingCategory);
@@ -66,7 +68,7 @@ public class CategoryService implements ICategoryService {
     public Category getCategory(String id) {
         Category existingCategory = categoryRepository.findById(id)
                 .orElseThrow(() -> {
-                    throw new RuntimeException("Cannot find Category with id : " + id);
+                    throw new DataNotFoundException("Cannot find Category with id : " + id);
                 });
         return existingCategory;
     }

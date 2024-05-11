@@ -1,6 +1,8 @@
 package com.mishoes.services.iplm.product;
 
 import com.mishoes.dtos.requests.create.product.ColorRequest;
+import com.mishoes.exceptions.DataAlreadyExistsException;
+import com.mishoes.exceptions.DataNotFoundException;
 import com.mishoes.mappers.product.ColorMapper;
 import com.mishoes.entity.Color;
 import com.mishoes.repositories.ColorRepository;
@@ -24,10 +26,10 @@ public class ColorService implements IColorService {
     public Color createColor(ColorRequest dto) {
 
         if (colorRepository.existsByCode(dto.getCode())){
-            throw new RuntimeException("Color code already exist");
+            throw new DataAlreadyExistsException("Color code already exist");
         }
         if (colorRepository.existsByName(dto.getName())){
-            throw new RuntimeException("Color name already exist");
+            throw new DataAlreadyExistsException("Color name already exist");
         }
         return colorRepository.save(colorMapper.toColor(dto));
     }
@@ -35,7 +37,7 @@ public class ColorService implements IColorService {
     @Override
     public Color updateColor(String id, ColorRequest dto) {
         Color existingColor = colorRepository.findById(id).orElseThrow(() -> {
-                    throw new RuntimeException("Cannot find Color with id : " + id);
+                    throw new DataNotFoundException("Cannot find Color with id : " + id);
                 }
         );
         colorMapper.updateColor(existingColor, dto);
@@ -51,7 +53,7 @@ public class ColorService implements IColorService {
     @Override
     public Color getColor(String id) {
         return colorRepository.findById(id).orElseThrow(()-> {
-                    throw new RuntimeException("Cannot find Color with id : "+id);
+                    throw new DataNotFoundException("Cannot find Color with id : "+id);
                 }
         );
     }

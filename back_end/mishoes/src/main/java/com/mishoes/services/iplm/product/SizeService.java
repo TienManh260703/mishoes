@@ -1,6 +1,8 @@
 package com.mishoes.services.iplm.product;
 
 import com.mishoes.dtos.requests.create.product.SizeRequest;
+import com.mishoes.exceptions.DataAlreadyExistsException;
+import com.mishoes.exceptions.DataNotFoundException;
 import com.mishoes.mappers.product.SizeMapper;
 import com.mishoes.entity.Size;
 import com.mishoes.repositories.SizeRepository;
@@ -23,10 +25,10 @@ public class SizeService implements ISizeService {
     @Override
     public Size createSize(SizeRequest dto) {
         if (sizeRepository.existsByCode(dto.getCode())) {
-            throw new RuntimeException("Size code already exist");
+            throw new DataAlreadyExistsException("Size code already exist");
         }
         if (sizeRepository.existsByName(dto.getName())) {
-            throw new RuntimeException("Size name already exist");
+            throw new DataAlreadyExistsException("Size name already exist");
         }
         return sizeRepository.save(
                 sizeMapper.toSize(dto)
@@ -36,10 +38,10 @@ public class SizeService implements ISizeService {
     @Override
     public Size updateSize(String id, SizeRequest dto) {
         if (sizeRepository.existsByName(dto.getName())) {
-            throw new RuntimeException("Size name already exist");
+            throw new DataAlreadyExistsException("Size name already exist");
         }
         Size existingSize = sizeRepository.findById(id).orElseThrow(() -> {
-                    throw new RuntimeException("Cannot find size with id : " + id);
+                    throw new DataNotFoundException("Cannot find size with id : " + id);
                 }
         );
         sizeMapper.updateSize(existingSize, dto);
@@ -49,7 +51,7 @@ public class SizeService implements ISizeService {
     @Override
     public Size getSize(String id) {
         return sizeRepository.findById(id).orElseThrow(() -> {
-            throw new RuntimeException("Cannot find size with id :" + id);
+            throw new DataNotFoundException("Cannot find size with id :" + id);
         });
     }
 

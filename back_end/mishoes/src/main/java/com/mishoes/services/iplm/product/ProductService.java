@@ -1,6 +1,8 @@
 package com.mishoes.services.iplm.product;
 
 import com.mishoes.dtos.requests.create.product.ProductRequest;
+import com.mishoes.exceptions.DataAlreadyExistsException;
+import com.mishoes.exceptions.DataNotFoundException;
 import com.mishoes.mappers.product.ProductMapper;
 import com.mishoes.entity.Product;
 import com.mishoes.repositories.ProductRepository;
@@ -23,7 +25,7 @@ public class ProductService implements IProductService {
     @Override
     public Product getProductById(String id) {
         return productRepository.findById(id).orElseThrow(() -> {
-            throw new RuntimeException("Cannot find product with id: " + id);
+            throw new DataNotFoundException("Cannot find product with id: " + id);
         });
     }
 
@@ -35,10 +37,10 @@ public class ProductService implements IProductService {
     @Override
     public Product createProduct(ProductRequest productDTO) {
         if (productRepository.existsByName(productDTO.getName())) {
-            throw new RuntimeException("Product name already exists");
+            throw new DataAlreadyExistsException("Product name already exists");
         }
         if (productRepository.existsByCode(productDTO.getCode())) {
-            throw new RuntimeException("Product code already exists");
+            throw new DataNotFoundException("Product code already exists");
         }
         Product product = productMapper.toProduct(productDTO);
         return productRepository.save(product);
@@ -48,7 +50,7 @@ public class ProductService implements IProductService {
     public Product updateProduct(String id, ProductRequest productDTO) {
         Product existingProduct = productRepository.findById(id)
                 .orElseThrow(() -> {
-                    throw new RuntimeException("Cannot find product with id : " + id);
+                    throw new DataNotFoundException("Cannot find product with id : " + id);
                 });
         productMapper.updateProduct(existingProduct, productDTO);
         return productRepository.save(existingProduct);

@@ -1,6 +1,8 @@
 package com.mishoes.services.iplm.product;
 
 import com.mishoes.dtos.requests.create.product.MaterialRequest;
+import com.mishoes.exceptions.DataAlreadyExistsException;
+import com.mishoes.exceptions.DataNotFoundException;
 import com.mishoes.mappers.product.MaterialMapper;
 import com.mishoes.entity.Material;
 import com.mishoes.repositories.MaterialRepository;
@@ -23,10 +25,10 @@ public class MaterialService implements IMaterialService {
     @Override
     public Material createMaterial(MaterialRequest dto) {
         if (materialRepository.existsByCode(dto.getCode())) {
-            throw new RuntimeException("Material code already exist");
+            throw new DataAlreadyExistsException("Material code already exist");
         }
         if (materialRepository.existsByName(dto.getName())) {
-            throw new RuntimeException("Material code already exist");
+            throw new DataAlreadyExistsException("Material code already exist");
         }
         return materialRepository.save(
                 materialMapper.toMaterial(dto)
@@ -36,7 +38,7 @@ public class MaterialService implements IMaterialService {
     @Override
     public Material updateMaterial(String id, MaterialRequest dto) {
         Material existingMaterial = materialRepository.findById(id).orElseThrow(() -> {
-            throw new RuntimeException("Cannot find material with id : " + id);
+            throw new DataNotFoundException("Cannot find material with id : " + id);
         });
         materialMapper.updateMaterial(existingMaterial, dto);
         return materialRepository.save(existingMaterial);
@@ -50,7 +52,7 @@ public class MaterialService implements IMaterialService {
     @Override
     public Material getMaterial(String id) {
         return materialRepository.findById(id).orElseThrow(() -> {
-            throw new RuntimeException("Cannot find material with id : " + id);
+            throw new DataNotFoundException("Cannot find material with id : " + id);
         });
     }
 

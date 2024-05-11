@@ -49,7 +49,7 @@ public class AuthenticationService implements IAuthenticationService {
         if (!authenticated) {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
-        var token = generateToken(request.getUsername());
+        var token = generateToken(request.getUsername(), user.getId());
         return AuthenticationResponse.builder()
                 .token(token)
                 .authenticated(true)
@@ -72,16 +72,17 @@ public class AuthenticationService implements IAuthenticationService {
     }
 
 
-    private String generateToken(String username) {
+    private String generateToken(String username, String id) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
         // Tạo đc payload cần có claim
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
                 .subject(username)
                 .issuer("manhntph37150")
                 .issueTime(new Date(
-                        Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()
+//                        Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()
+                        24 * 60 * 60
                 ))
-                .claim("customClaim", "Custom")
+                .claim("userId", id)
                 .build();
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
         JWSObject jwsObject = new JWSObject(header, payload);
@@ -91,7 +92,7 @@ public class AuthenticationService implements IAuthenticationService {
             return jwsObject.serialize();
         } catch (JOSEException e) {
             System.err.println("Cannot create token" + e.getMessage());
-            throw new RuntimeException();
+            throw new RuntimeException("Create token fail" );
         }
     }
 }
