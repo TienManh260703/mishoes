@@ -8,6 +8,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.text.ParseException;
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
@@ -59,6 +61,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(
                 exception.getMessage()
         );
+    }
+
+    @ExceptionHandler(ParseException.class)
+    public ResponseEntity<?> handleParseException (ParseException exception){
+        return ResponseEntity.badRequest().body("Parse token fail");
     }
 
 

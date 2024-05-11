@@ -16,6 +16,7 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -33,7 +34,8 @@ import java.util.Date;
 public class AuthenticationService implements IAuthenticationService {
     UserRepository userRepository;
     @NonFinal
-    protected static final String KEY = "3lGTsDCc67B9SuDiVEBea6uglcxRtH+rHugZDqhl1CPu6fJgK2kOP9aqJVEu1V2A";
+//    @Value("${jwt.signerKey}") // Update sau
+    protected String KEY=  "3lGTsDCc67B9SuDiVEBea6uglcxRtH+rHugZDqhl1CPu6fJgK2kOP9aqJVEu1V2A";
 
     @Override
     public AuthenticationResponse authentication(AuthenticationRequest request) {
@@ -57,7 +59,8 @@ public class AuthenticationService implements IAuthenticationService {
     }
 
     @Override
-    public IntrospectResponse introspect(IntrospectRequest request) throws JOSEException, ParseException {
+    public IntrospectResponse introspect(IntrospectRequest request)
+            throws JOSEException, ParseException {
         String token = request.getToken();
         JWSVerifier verifier = new MACVerifier(KEY.getBytes());
         SignedJWT signedJWT = SignedJWT.parse(token);
@@ -78,10 +81,9 @@ public class AuthenticationService implements IAuthenticationService {
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
                 .subject(username)
                 .issuer("manhntph37150")
-                .issueTime(new Date(
-//                        Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()
-                        24 * 60 * 60
-                ))
+                .issueTime(new Date())
+                .expirationTime(Date.from(Instant.now().plus(1, ChronoUnit.HOURS)))
+                .expirationTime(Date.from(Instant.now().plus(1, ChronoUnit.HOURS)))
                 .claim("userId", id)
                 .build();
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
@@ -92,7 +94,7 @@ public class AuthenticationService implements IAuthenticationService {
             return jwsObject.serialize();
         } catch (JOSEException e) {
             System.err.println("Cannot create token" + e.getMessage());
-            throw new RuntimeException("Create token fail" );
+            throw new RuntimeException("Create token fail");
         }
     }
 }
