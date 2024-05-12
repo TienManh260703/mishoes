@@ -3,6 +3,7 @@ package com.mishoes.exception;
 import com.mishoes.dto.response.APIResponse;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -67,5 +68,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body("Parse token fail");
     }
 
+    @ExceptionHandler(AccessDeniedException.class)
+    public  ResponseEntity<?> handleAccessDeniedException (AccessDeniedException exception){
+        return ResponseEntity.badRequest().body(
+                APIResponse.builder()
+                .code(1004)
+                .message("You do not have access")
+                .build()
+        );
+    }
 
 }

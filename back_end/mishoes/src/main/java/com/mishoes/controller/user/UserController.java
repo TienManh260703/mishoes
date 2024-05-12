@@ -36,6 +36,13 @@ public class UserController {
         );
     }
 
+    @GetMapping("myInfo")
+    public ResponseEntity<?> getMyInfo() {
+        return ResponseEntity.ok().body(
+                userService.getMyInfo()
+        );
+    }
+
     @GetMapping
     public ResponseEntity<?> getUsers(
             @RequestParam("page") int page,
@@ -43,7 +50,7 @@ public class UserController {
     ) {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         log.info("Username : {} ", authentication.getName());
-        authentication.getAuthorities().forEach(grantedAuthority -> log.info( grantedAuthority.getAuthority()));
+        authentication.getAuthorities().forEach(grantedAuthority -> log.info(grantedAuthority.getAuthority()));
 
         PageRequest pageRequest = PageRequest.of(page, limit, Sort.by("createdAt"));
         Page<UserResponse> userPage = userService.getUsers(pageRequest);

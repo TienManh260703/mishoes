@@ -14,4 +14,6 @@ public interface IUserService {
     User createUser (CreateUserRequest request);
     User updateUSer(String id, UpdateUerRequest request) throws DataNotFoundException;
     String deleteUser (String id);
+
+    UserResponse getMyInfo ();
 }

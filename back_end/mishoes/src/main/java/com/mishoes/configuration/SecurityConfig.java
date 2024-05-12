@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -21,6 +22,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity // Phần quyền bằng method
 public class SecurityConfig {
     @Value("${api.prefix}")
     private String API_PREFIX;
@@ -36,11 +38,7 @@ public class SecurityConfig {
         httpSecurity
                 .authorizeHttpRequests(request ->
                         request.requestMatchers(
-                                HttpMethod.POST, API_PREFIX + "/users").permitAll()
-                                .requestMatchers(
-                                        HttpMethod.POST, API_PREFIX + "/auth/token", API_PREFIX + "/auth/introspect").permitAll()
-                                .requestMatchers(HttpMethod.GET, API_PREFIX + "/users")
-                                .hasRole(Role.ADMIN.name())
+                                HttpMethod.POST, API_PREFIX + "/users", API_PREFIX + "/auth/token", API_PREFIX + "/auth/introspect").permitAll()
                                 .anyRequest().authenticated());
         httpSecurity.oauth2ResourceServer(
                 oauth2 ->

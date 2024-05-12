@@ -5,6 +5,7 @@ import com.mishoes.dto.request.update.user.UpdateUerRequest;
 import com.mishoes.dto.response.user.UserResponse;
 import com.mishoes.entity.User;
 import com.mishoes.enums.Role;
+import com.mishoes.exception.AppException;
 import com.mishoes.exception.DataAlreadyExistsException;
 import com.mishoes.exception.DataNotFoundException;
 import com.mishoes.mapper.user.UserMapper;
@@ -13,8 +14,12 @@ import com.mishoes.service.IUserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,18 +30,24 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Slf4j
 public class UserService implements IUserService {
     UserRepository userRepository;
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
+
     @Override
-    public User getUser(String id)  {
+    @PostAuthorize("returnObject.userName ==  authentication.name") // Kiểm tra sau khi method hoàn thành
+    public User getUser(String id) {
+        log.info("In method get user by id");
         return userRepository.findById(id).orElseThrow(() ->
                 new DataNotFoundException("Cannot find user with id : " + id));
     }
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")// Kiểm tra trước khi vào method
     public Page<UserResponse> getUsers(PageRequest pageRequest) {
+        log.info("In method get Users");
         return userRepository.findAll(pageRequest)
                 .map(user -> userMapper.toUserResponse(
                         user));
@@ -67,7 +78,6 @@ public class UserService implements IUserService {
                 }
         );
         // Xử lý trùng username và password ?? -> chưa làm
-
         userMapper.updateUser(existingUer, request);
         existingUer.setPassword(passwordEncoder.encode(request.getPassword()));
         return userRepository.save(existingUer);
@@ -84,6 +94,15 @@ public class UserService implements IUserService {
         } else {
             return "User not found. Delete failed";
         }
+    }
+
+    @Override
+    public UserResponse getMyInfo() {
+        var context = SecurityContextHolder.getContext();
+        String name = context.getAuthentication().getName();
+        User user = userRepository.findByUserName(name).orElseThrow(() ->
+                new DataNotFoundException("User not exist"));
+        return userMapper.toUserResponse(user);
     }
 
 }
