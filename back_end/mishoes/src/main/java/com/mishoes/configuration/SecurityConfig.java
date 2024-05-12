@@ -40,10 +40,13 @@ public class SecurityConfig {
                         request.requestMatchers(
                                 HttpMethod.POST, API_PREFIX + "/users", API_PREFIX + "/auth/token", API_PREFIX + "/auth/introspect").permitAll()
                                 .anyRequest().authenticated());
+
         httpSecurity.oauth2ResourceServer(
                 oauth2 ->
-                        oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())
-                                .jwtAuthenticationConverter(jwtAuthenticationConverter()))
+                        oauth2.jwt(jwtConfigurer ->
+                                jwtConfigurer.decoder(jwtDecoder())
+                                        .jwtAuthenticationConverter(jwtAuthenticationConverter()))
+                .authenticationEntryPoint(new JwtAuthenticationEntryPoint()) //authentication fail
         );
         // Tắt csrf
         httpSecurity.csrf(AbstractHttpConfigurer::disable);

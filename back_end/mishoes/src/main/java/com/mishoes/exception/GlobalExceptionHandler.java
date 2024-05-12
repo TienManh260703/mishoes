@@ -12,23 +12,26 @@ import java.text.ParseException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(value = Exception.class)
     public ResponseEntity<?> handlerRuntimeException(RuntimeException exception) {
         return ResponseEntity.badRequest().body(
                 exception.getMessage() + "Lỗi khác "
         );
     }
 
-    @ExceptionHandler(AppException.class)
+    @ExceptionHandler(value = AppException.class)
     public ResponseEntity<?> handlerAppException(AppException exception) {
         ErrorCode errorCode = exception.getErrorCode();
-        return ResponseEntity.badRequest().body(APIResponse.builder()
-                .code(errorCode.getCode())
-                .message(exception.getMessage() + "App")
-                .build());
+        return ResponseEntity
+                .status(errorCode.getStatusCode())
+                .body(
+                        APIResponse.builder()
+                                .code(errorCode.getCode())
+                                .message(exception.getMessage() + "App")
+                                .build());
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ExceptionHandler(value = MethodArgumentNotValidException.class)
     public ResponseEntity<?> handlerValidation(
             MethodArgumentNotValidException exception) {
         return ResponseEntity.badRequest().body(
@@ -36,46 +39,46 @@ public class GlobalExceptionHandler {
     }
 
     // Chưa bắt được
-    @ExceptionHandler(IllegalStateException.class)
+    @ExceptionHandler(value = IllegalStateException.class)
     public ResponseEntity<?> handlerIllegalStateException(
             IllegalStateException exception) {
         return ResponseEntity.badRequest().body(
                 exception.getMessage() + "Lỗi IllegalStateException");
     }
 
-    @ExceptionHandler(DataNotFoundException.class)
+    @ExceptionHandler(value = DataNotFoundException.class)
     public ResponseEntity<?> handlerDataNotFountException(DataNotFoundException exception) {
         return ResponseEntity.badRequest().body(
                 exception.getMessage());
     }
 
-    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ExceptionHandler(value = DataIntegrityViolationException.class)
     public ResponseEntity<?> handleDataIntegrityViolationException(DataIntegrityViolationException exception) {
         return ResponseEntity.badRequest().body(
                 "The name already exists"
         );
     }
 
-    @ExceptionHandler(DataAlreadyExistsException.class)
+    @ExceptionHandler(value = DataAlreadyExistsException.class)
     public ResponseEntity<?> handleDataAlreadyExistException(DataAlreadyExistsException exception) {
         return ResponseEntity.badRequest().body(
                 exception.getMessage()
         );
     }
 
-    @ExceptionHandler(ParseException.class)
-    public ResponseEntity<?> handleParseException (ParseException exception){
+    @ExceptionHandler(value = ParseException.class)
+    public ResponseEntity<?> handleParseException(ParseException exception) {
         return ResponseEntity.badRequest().body("Parse token fail");
     }
 
-    @ExceptionHandler(AccessDeniedException.class)
-    public  ResponseEntity<?> handleAccessDeniedException (AccessDeniedException exception){
-        return ResponseEntity.badRequest().body(
+    @ExceptionHandler(value = AccessDeniedException.class)
+    public ResponseEntity<?> handleAccessDeniedException(AccessDeniedException exception) {
+        ErrorCode errorCode = ErrorCode.UNAUTHORIZED;
+        return ResponseEntity.status(errorCode.getStatusCode()).body(
                 APIResponse.builder()
-                .code(1004)
-                .message("You do not have access")
-                .build()
+                        .code(errorCode.getCode())
+                        .message(errorCode.getMessage())
+                        .build()
         );
     }
-
 }
