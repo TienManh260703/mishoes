@@ -1,9 +1,7 @@
 package com.mishoes.entity;
 
 import com.mishoes.entity.base.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -33,6 +31,6 @@ public class User extends BaseEntity {
     boolean gender;
     @Column(name = "data_of_birth", nullable = false)
     LocalDate dateOfBirth;
-    @Column(name = "roles")
-    Set<String> roles;
+    @ManyToMany
+    Set<Role> roles;
 }

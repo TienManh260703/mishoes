@@ -55,7 +55,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = DataIntegrityViolationException.class)
     public ResponseEntity<?> handleDataIntegrityViolationException(DataIntegrityViolationException exception) {
         return ResponseEntity.badRequest().body(
-                "The name already exists"
+                "Error SQL : " + exception.getMessage()
         );
     }
 

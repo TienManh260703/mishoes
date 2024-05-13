@@ -1,19 +1,23 @@
 package com.mishoes.entity;
 
-import com.mishoes.entity.base.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-//@Getter
-//@Setter
-//@NoArgsConstructor
-//@AllArgsConstructor
-//@Builder
-//@FieldDefaults(level =  AccessLevel.PRIVATE)
-//@Table(name = "role")
-//@Entity
-public class Role extends BaseEntity {
+import java.util.Set;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@FieldDefaults(level =  AccessLevel.PRIVATE)
+@Table(name = "role")
+@Entity
+public class Role  {
+    @Id
     String name;
+    String description;
+    @ManyToMany(fetch = FetchType.LAZY)
+    Set<Permission>  permissions;
 }

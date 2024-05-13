@@ -39,6 +39,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request ->
                         request.requestMatchers(
                                 HttpMethod.POST, API_PREFIX + "/users", API_PREFIX + "/auth/token", API_PREFIX + "/auth/introspect").permitAll()
+                                .requestMatchers(API_PREFIX+"/products/**").permitAll()
                                 .anyRequest().authenticated());
 
         httpSecurity.oauth2ResourceServer(

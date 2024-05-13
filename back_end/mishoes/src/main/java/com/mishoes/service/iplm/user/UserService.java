@@ -5,7 +5,6 @@ import com.mishoes.dto.request.update.user.UpdateUerRequest;
 import com.mishoes.dto.response.user.UserResponse;
 import com.mishoes.entity.User;
 import com.mishoes.enums.Role;
-import com.mishoes.exception.AppException;
 import com.mishoes.exception.DataAlreadyExistsException;
 import com.mishoes.exception.DataNotFoundException;
 import com.mishoes.mapper.user.UserMapper;
@@ -20,7 +19,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -65,7 +63,7 @@ public class UserService implements IUserService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         HashSet<String> roles = new HashSet<>();
         roles.add(Role.USER.name());
-        user.setRoles(roles);
+//        user.setRoles(roles);
         return userRepository.save(
                 user
         );

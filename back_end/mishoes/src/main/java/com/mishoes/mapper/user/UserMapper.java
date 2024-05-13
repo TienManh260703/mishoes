@@ -27,7 +27,7 @@ public class UserMapper {
         response.setDateOfBirth(user.getDateOfBirth());
         response.setCreateAt(user.getCreatedAt());
         response.setUpdateAt(user.getUpdatedAt());
-        response.setRoles(user.getRoles());
+//        response.setRoles(user.getRoles());
         response.setStatus(user.getStatus());
         return response;
     }

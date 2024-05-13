@@ -19,7 +19,7 @@ public class UserResponse {
     String code;
     @JsonProperty(namespace = "user_name")
     String userName;
-    String password;
+//    String password;
     @JsonProperty(namespace = "first_name")
     String firstName;
     @JsonProperty(namespace = "last_name")

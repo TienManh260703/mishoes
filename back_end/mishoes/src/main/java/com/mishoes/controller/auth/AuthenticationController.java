@@ -1,4 +1,4 @@
-package com.mishoes.controllers.auth;
+package com.mishoes.controller.auth;
 
 import com.mishoes.dto.request.auth.AuthenticationRequest;
 import com.mishoes.dto.request.auth.IntrospectRequest;

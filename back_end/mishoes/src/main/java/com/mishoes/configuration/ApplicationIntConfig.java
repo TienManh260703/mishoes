@@ -36,7 +36,7 @@ public class ApplicationIntConfig {
                         .lastName("Mạnh")
                         .firstName("Nguyễn Tiến")
                         .dateOfBirth(dateOfBirth)
-                        .roles(roles)
+//                        .roles(roles)
                         .password(passwordEncoder.encode("admin"))
                         .build();
                 userRepository.save(user);
