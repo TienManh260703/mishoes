@@ -8,6 +8,7 @@ import com.mishoes.enums.Role;
 import com.mishoes.exception.DataAlreadyExistsException;
 import com.mishoes.exception.DataNotFoundException;
 import com.mishoes.mapper.user.UserMapper;
+import com.mishoes.repository.RoleRepository;
 import com.mishoes.repository.UserRepository;
 import com.mishoes.service.IUserService;
 import lombok.AccessLevel;
@@ -23,6 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -31,6 +33,7 @@ import java.util.Optional;
 @Slf4j
 public class UserService implements IUserService {
     UserRepository userRepository;
+    RoleRepository roleRepository;
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
 
@@ -43,7 +46,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")// Kiểm tra trước khi vào method
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")// Kiểm tra trước khi vào method
     public Page<UserResponse> getUsers(PageRequest pageRequest) {
         log.info("In method get Users");
         return userRepository.findAll(pageRequest)
@@ -78,6 +81,8 @@ public class UserService implements IUserService {
         // Xử lý trùng username và password ?? -> chưa làm
         userMapper.updateUser(existingUer, request);
         existingUer.setPassword(passwordEncoder.encode(request.getPassword()));
+        List<com.mishoes.entity.Role> roles = roleRepository.findAllById(request.getRoles());
+        existingUer.setRoles(new HashSet<>(roles));
         return userRepository.save(existingUer);
     }
 

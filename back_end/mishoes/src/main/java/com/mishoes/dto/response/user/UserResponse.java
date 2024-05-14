@@ -34,6 +34,6 @@ public class UserResponse {
     LocalDateTime createAt;
     @JsonProperty(namespace = "update_at")
     LocalDateTime updateAt;
-    Set<String> roles;
+    Set<RoleResponse> roles;
     Integer status;
 }

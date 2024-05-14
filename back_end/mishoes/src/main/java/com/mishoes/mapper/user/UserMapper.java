@@ -4,14 +4,22 @@ import com.mishoes.dto.request.create.user.CreateUserRequest;
 import com.mishoes.dto.request.update.user.UpdateUerRequest;
 import com.mishoes.dto.response.user.UserResponse;
 import com.mishoes.entity.User;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.stream.Collectors;
 
 import static com.mishoes.common.GenCode.generateUSER;
 
 @Component
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserMapper {
+    RoleMapper roleMapper;
+
     public UserResponse toUserResponse(User user) {
         UserResponse response = new UserResponse();
         response.setId(user.getId());
@@ -27,7 +35,9 @@ public class UserMapper {
         response.setDateOfBirth(user.getDateOfBirth());
         response.setCreateAt(user.getCreatedAt());
         response.setUpdateAt(user.getUpdatedAt());
-//        response.setRoles(user.getRoles());
+        response.setRoles(user.getRoles().stream().map(
+                role -> roleMapper.toRoleResponse(role))
+                .collect(Collectors.toSet()));
         response.setStatus(user.getStatus());
         return response;
     }
