@@ -43,7 +43,7 @@ public class SecurityConfig {
         httpSecurity
                 .authorizeHttpRequests(request ->
                         request.requestMatchers(
-                                HttpMethod.POST, API_PREFIX + "/users", API_PREFIX + "/auth/token", API_PREFIX + "/auth/introspect", API_PREFIX + "/auth/logout", API_PREFIX + "/auth/refresh").permitAll()
+                                HttpMethod.POST, API_PREFIX + "/users", API_PREFIX + "/auth/token", API_PREFIX + "/auth/introspect", API_PREFIX + "/auth/logout",  API_PREFIX + "/auth/refresh").permitAll()
                                 .requestMatchers(API_PREFIX + "/products/**").permitAll()
                                 .anyRequest().authenticated());
 
