@@ -1,6 +1,7 @@
 package com.mishoes.configuration;
 
 import com.mishoes.enums.Role;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,26 +27,29 @@ import javax.crypto.spec.SecretKeySpec;
 public class SecurityConfig {
     @Value("${api.prefix}")
     private String API_PREFIX;
-    @Value("${jwt.signerKey}") // Update sau
-    private String signerKey;
+//    @Value("${jwt.signerKey}") // Update sau
+//    private String signerKey;
+    @Autowired
+    private CustomJwtDecoder customJwtDecoder;
     private final String[] PUBLIC_ENDPOINTS = {
             API_PREFIX + "/users",
             API_PREFIX + "/auth/token",
-            API_PREFIX + "/auth/introspect"};
+            API_PREFIX + "/auth/introspect",
+            API_PREFIX + "/auth/logout"};
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeHttpRequests(request ->
                         request.requestMatchers(
-                                HttpMethod.POST, API_PREFIX + "/users", API_PREFIX + "/auth/token", API_PREFIX + "/auth/introspect").permitAll()
+                                HttpMethod.POST, API_PREFIX + "/users", API_PREFIX + "/auth/token", API_PREFIX + "/auth/introspect", API_PREFIX + "/auth/logout").permitAll()
                                 .requestMatchers(API_PREFIX+"/products/**").permitAll()
                                 .anyRequest().authenticated());
 
         httpSecurity.oauth2ResourceServer(
                 oauth2 ->
                         oauth2.jwt(jwtConfigurer ->
-                                jwtConfigurer.decoder(jwtDecoder())
+                                jwtConfigurer.decoder(customJwtDecoder)
                                         .jwtAuthenticationConverter(jwtAuthenticationConverter()))
                 .authenticationEntryPoint(new JwtAuthenticationEntryPoint()) //authentication fail
         );
@@ -53,15 +57,15 @@ public class SecurityConfig {
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
         return httpSecurity.build();
     }
-
-    @Bean
-    JwtDecoder jwtDecoder() {
-        SecretKeySpec secretKeySpec = new SecretKeySpec(signerKey.getBytes(), "HS512");
-        NimbusJwtDecoder nimbusJwtDecoder = NimbusJwtDecoder
-                .withSecretKey(secretKeySpec)
-                .macAlgorithm(MacAlgorithm.HS512).build();
-        return nimbusJwtDecoder;
-    }
+    // chịu trách nhiệm verify token : (Khong dung) Update sanh CustomJwtDecoder
+//    @Bean
+//    JwtDecoder jwtDecoder() {
+//        SecretKeySpec secretKeySpec = new SecretKeySpec(signerKey.getBytes(), "HS512");
+//        NimbusJwtDecoder nimbusJwtDecoder = NimbusJwtDecoder
+//                .withSecretKey(secretKeySpec)
+//                .macAlgorithm(MacAlgorithm.HS512).build();
+//        return nimbusJwtDecoder;
+//    }
 
     @Bean
     PasswordEncoder passwordEncoder() {

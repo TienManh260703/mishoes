@@ -2,6 +2,7 @@ package com.mishoes.controller.auth;
 
 import com.mishoes.dto.request.auth.AuthenticationRequest;
 import com.mishoes.dto.request.auth.IntrospectRequest;
+import com.mishoes.dto.request.auth.LogoutRequest;
 import com.mishoes.dto.response.auth.AuthenticationResponse;
 import com.mishoes.exception.DataNotFoundException;
 
@@ -31,17 +32,23 @@ public class AuthenticationController {
             @RequestBody AuthenticationRequest request) throws DataNotFoundException {
         var result = authenticationService.authentication(request);
         return ResponseEntity.ok().body(
-               result
+                result
         );
     }
 
     @PostMapping("introspect")
-    public ResponseEntity<?> authenticate (@RequestBody IntrospectRequest request)
+    public ResponseEntity<?> authenticate(@RequestBody IntrospectRequest request)
             throws ParseException, JOSEException {
         var result = authenticationService.introspect(request);
         return ResponseEntity.ok().body(
                 result
         );
+    }
+
+    @PostMapping("logout")
+    public ResponseEntity<?> logout(@RequestBody LogoutRequest request) throws ParseException, JOSEException {
+        authenticationService.logout(request);
+        return ResponseEntity.ok().body("Logout successful");
     }
 
 }

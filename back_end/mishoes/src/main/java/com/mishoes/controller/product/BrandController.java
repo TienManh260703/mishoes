@@ -27,7 +27,6 @@ public class BrandController {
                         .map(
                                 brand -> brandMapper.toBrandResponse(brand)
                         ).toList());
-
     }
 
     @GetMapping("/{id}")

@@ -10,6 +10,7 @@ import com.mishoes.service.IProductService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,6 +36,7 @@ public class ProductService implements IProductService {
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
     public Product createProduct(ProductRequest productDTO) {
         if (productRepository.existsByName(productDTO.getName())) {
             throw new DataAlreadyExistsException("Product name already exists");

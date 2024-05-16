@@ -31,7 +31,7 @@ public class RoleMapper {
     public Role toRole(CreateRoleRequest request) {
 
         return Role.builder()
-                .name(request.getName())
+                .name(request.getName().toUpperCase())
                 .description(request.getDescription())
                 .build();
     }

@@ -15,7 +15,9 @@ public enum ErrorCode {
     CATEGORY_INVALID(1002, "Category invalid", HttpStatus.BAD_REQUEST),
     UNAUTHENTICATED(1003, "Unauthenticated", HttpStatus.UNAUTHORIZED),// 401
     UNAUTHORIZED(1004 , "You do not have permission", HttpStatus.FORBIDDEN),// 403
-    NOT_EXIST(1005, "Not exist", HttpStatus.NOT_FOUND);
+    NOT_EXIST(1005, "Not exist", HttpStatus.NOT_FOUND),
+    TOKEN_INVALID(1006,"Token invalid",HttpStatus.UNAUTHORIZED);
+
     private int code;
     private String message;
     private HttpStatus statusCode;

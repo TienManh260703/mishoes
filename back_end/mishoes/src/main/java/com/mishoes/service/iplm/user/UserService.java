@@ -3,8 +3,8 @@ package com.mishoes.service.iplm.user;
 import com.mishoes.dto.request.create.user.CreateUserRequest;
 import com.mishoes.dto.request.update.user.UpdateUerRequest;
 import com.mishoes.dto.response.user.UserResponse;
+import com.mishoes.entity.Role;
 import com.mishoes.entity.User;
-import com.mishoes.enums.Role;
 import com.mishoes.exception.DataAlreadyExistsException;
 import com.mishoes.exception.DataNotFoundException;
 import com.mishoes.mapper.user.UserMapper;
@@ -64,9 +64,15 @@ public class UserService implements IUserService {
         }
         User user = userMapper.createUser(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        HashSet<String> roles = new HashSet<>();
-        roles.add(Role.USER.name());
-//        user.setRoles(roles);
+        HashSet<com.mishoes.entity.Role> roles = new HashSet<>();
+        if (roles.isEmpty()) {
+            Optional<Role> roleOptional = roleRepository.findById("CUSTOMER");
+            if (roleOptional.isPresent()) {
+                Role role = roleOptional.get();
+                roles.add(role);
+            }
+        }
+        user.setRoles(roles);
         return userRepository.save(
                 user
         );

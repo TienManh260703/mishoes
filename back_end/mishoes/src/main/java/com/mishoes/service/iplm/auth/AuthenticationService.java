@@ -2,12 +2,15 @@ package com.mishoes.service.iplm.auth;
 
 import com.mishoes.dto.request.auth.AuthenticationRequest;
 import com.mishoes.dto.request.auth.IntrospectRequest;
+import com.mishoes.dto.request.auth.LogoutRequest;
 import com.mishoes.dto.response.auth.AuthenticationResponse;
 import com.mishoes.dto.response.auth.IntrospectResponse;
+import com.mishoes.entity.InvalidatedToken;
 import com.mishoes.entity.User;
 import com.mishoes.exception.AppException;
 import com.mishoes.exception.DataNotFoundException;
 import com.mishoes.exception.ErrorCode;
+import com.mishoes.repository.InvalidatedTokenRepository;
 import com.mishoes.repository.UserRepository;
 import com.mishoes.service.IAuthenticationService;
 import com.nimbusds.jose.*;
@@ -31,12 +34,14 @@ import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Date;
 import java.util.StringJoiner;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthenticationService implements IAuthenticationService {
     UserRepository userRepository;
+    InvalidatedTokenRepository invalidatedTokenRepository;
     @NonFinal
     @Value("${jwt.signerKey}") // Update sau
     protected String KEY;
@@ -46,7 +51,6 @@ public class AuthenticationService implements IAuthenticationService {
         var user = userRepository.findByUserName(request.getUsername()).orElseThrow(() -> {
                     throw new DataNotFoundException("User name not found");
                 }
-
         );
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         boolean authenticated = passwordEncoder.matches(request.getPassword(),
@@ -54,25 +58,26 @@ public class AuthenticationService implements IAuthenticationService {
         if (!authenticated) {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
-        var token = generateToken(user);
+        String token = generateToken(user);
         return AuthenticationResponse.builder()
                 .token(token)
                 .authenticated(true)
                 .build();
     }
 
+    // Xem token còn hạn không
     @Override
     public IntrospectResponse introspect(IntrospectRequest request)
             throws JOSEException, ParseException {
         String token = request.getToken();
-        JWSVerifier verifier = new MACVerifier(KEY.getBytes());
-        SignedJWT signedJWT = SignedJWT.parse(token);
-        //
-        Date expiredTime = signedJWT.getJWTClaimsSet().getExpirationTime();
-        var verified = signedJWT.verify(verifier);
-        return IntrospectResponse
-                .builder()
-                .valid(verified && expiredTime.after(new Date()))
+        boolean isValid = true;
+        try {
+            SignedJWT jwtToken = verifyToken(token);
+        } catch (AppException exception) {
+            isValid = false;
+        }
+        return IntrospectResponse.builder()
+                .valid(isValid)
                 .build();
     }
 
@@ -85,6 +90,7 @@ public class AuthenticationService implements IAuthenticationService {
                 .issuer("manhntph37150")
                 .issueTime(new Date())
                 .expirationTime(Date.from(Instant.now().plus(24, ChronoUnit.HOURS)))
+                .jwtID(UUID.randomUUID().toString())
                 .claim("userId", user.getId())
                 .claim("scope", buildScope(user))
                 .build();
@@ -100,16 +106,52 @@ public class AuthenticationService implements IAuthenticationService {
         }
     }
 
+    // Chuyển SOPE_ -> ROLE_ và Lấy ra role và các permission của user
     private String buildScope(User user) {
         StringJoiner stringJoiner = new StringJoiner(" ");
         if (!CollectionUtils.isEmpty(user.getRoles()))
-            user.getRoles().forEach(role ->  {
-                stringJoiner.add("ROLE_"+ role.getName());
-                if(!CollectionUtils.isEmpty(role.getPermissions())){
+            user.getRoles().forEach(role -> {
+                stringJoiner.add("ROLE_" + role.getName());
+                if (!CollectionUtils.isEmpty(role.getPermissions())) {
                     role.getPermissions().forEach(permission -> stringJoiner.add(permission.getName()));
                 }
 
             });
         return stringJoiner.toString();
+    }
+
+    public void logout(LogoutRequest request) throws ParseException, JOSEException {
+        // Read token
+        SignedJWT signedJWT = verifyToken(request.getToken());
+        String jti = signedJWT.getJWTClaimsSet().getJWTID();
+        Date expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
+
+        InvalidatedToken invalidatedToken = InvalidatedToken
+                .builder()
+                .id(jti)
+                .expiryTime(expiryTime)
+                .build();
+        invalidatedTokenRepository.save(invalidatedToken);
+    }
+
+    // Lấy ra thông tin chi tiết token
+    private SignedJWT verifyToken(String token) throws JOSEException, ParseException {
+        JWSVerifier verifier = new MACVerifier(KEY.getBytes());
+
+        SignedJWT signedJWT = SignedJWT.parse(token);
+        //
+        Date expiredTime = signedJWT.getJWTClaimsSet().getExpirationTime();
+
+        boolean verified = signedJWT.verify(verifier);
+
+        // Nếu token hết hạn
+        if (!(verified && expiredTime.after(new Date()))) {
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
+        }
+        // Kiểm tra xem token này đã logout chưa
+        if (invalidatedTokenRepository.existsById(signedJWT.getJWTClaimsSet().getJWTID())) {
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
+        }
+        return signedJWT;
     }
 }
