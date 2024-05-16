@@ -49,9 +49,9 @@ public class AuthenticationService implements IAuthenticationService {
     protected String KEY;
     // Đang chưa lấy đc value từ file cấu hình -> mới phải gán
     @Value(("${jwt.valid-duration}"))
-    private long VALID_DURATION=24 * 60 * 60;
+    private long VALID_DURATION=86_400;
     @Value("${jwt.refreshable-duration}")
-    private long REFRESHABLE_DURATION=24 * 60 * 60 * 2;
+    private long REFRESHABLE_DURATION=172_800;
 
     @Override
     public AuthenticationResponse authentication(AuthenticationRequest request) {
