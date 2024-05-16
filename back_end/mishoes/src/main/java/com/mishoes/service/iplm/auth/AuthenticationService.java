@@ -3,6 +3,7 @@ package com.mishoes.service.iplm.auth;
 import com.mishoes.dto.request.auth.AuthenticationRequest;
 import com.mishoes.dto.request.auth.IntrospectRequest;
 import com.mishoes.dto.request.auth.LogoutRequest;
+import com.mishoes.dto.request.auth.RefreshTokenRequest;
 import com.mishoes.dto.response.auth.AuthenticationResponse;
 import com.mishoes.dto.response.auth.IntrospectResponse;
 import com.mishoes.entity.InvalidatedToken;
@@ -31,7 +32,6 @@ import org.springframework.util.CollectionUtils;
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Collections;
 import java.util.Date;
 import java.util.StringJoiner;
 import java.util.UUID;
@@ -153,5 +153,28 @@ public class AuthenticationService implements IAuthenticationService {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
         return signedJWT;
+    }
+    // gia hạn token
+    public AuthenticationResponse refreshToken (RefreshTokenRequest request) throws ParseException, JOSEException {
+        // logout token cũ
+        SignedJWT signedJWT = verifyToken(request.getToken());
+        String jti = signedJWT.getJWTClaimsSet().getJWTID();
+        Date expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
+        InvalidatedToken invalidatedToken = InvalidatedToken.builder()
+                .id(jti)
+                .expiryTime(expiryTime)
+                .build();
+        invalidatedTokenRepository.save(invalidatedToken);
+        String username = signedJWT.getJWTClaimsSet().getSubject();
+        User user = userRepository.findByUserName(username).orElseThrow(() ->
+        {
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
+        });
+        // Tạo token mới
+        String token = generateToken(user);
+        return AuthenticationResponse.builder()
+                .token(token)
+                .authenticated(true)
+                .build();
     }
 }

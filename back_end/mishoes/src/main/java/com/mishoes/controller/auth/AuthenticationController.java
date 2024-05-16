@@ -3,6 +3,7 @@ package com.mishoes.controller.auth;
 import com.mishoes.dto.request.auth.AuthenticationRequest;
 import com.mishoes.dto.request.auth.IntrospectRequest;
 import com.mishoes.dto.request.auth.LogoutRequest;
+import com.mishoes.dto.request.auth.RefreshTokenRequest;
 import com.mishoes.dto.response.auth.AuthenticationResponse;
 import com.mishoes.exception.DataNotFoundException;
 
@@ -50,5 +51,13 @@ public class AuthenticationController {
         authenticationService.logout(request);
         return ResponseEntity.ok().body("Logout successful");
     }
-
+    @PostMapping("refresh")
+    public ResponseEntity<AuthenticationResponse> authenticate(
+            @RequestBody RefreshTokenRequest request)
+            throws DataNotFoundException, ParseException, JOSEException {
+        var result = authenticationService.refreshToken(request);
+        return ResponseEntity.ok().body(
+                result
+        );
+    }
 }

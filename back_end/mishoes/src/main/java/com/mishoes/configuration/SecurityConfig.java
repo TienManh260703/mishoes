@@ -27,7 +27,7 @@ import javax.crypto.spec.SecretKeySpec;
 public class SecurityConfig {
     @Value("${api.prefix}")
     private String API_PREFIX;
-//    @Value("${jwt.signerKey}") // Update sau
+    //    @Value("${jwt.signerKey}") // Update sau
 //    private String signerKey;
     @Autowired
     private CustomJwtDecoder customJwtDecoder;
@@ -35,15 +35,16 @@ public class SecurityConfig {
             API_PREFIX + "/users",
             API_PREFIX + "/auth/token",
             API_PREFIX + "/auth/introspect",
-            API_PREFIX + "/auth/logout"};
+            API_PREFIX + "/auth/logout",
+            API_PREFIX + "/auth/refresh"};
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeHttpRequests(request ->
                         request.requestMatchers(
-                                HttpMethod.POST, API_PREFIX + "/users", API_PREFIX + "/auth/token", API_PREFIX + "/auth/introspect", API_PREFIX + "/auth/logout").permitAll()
-                                .requestMatchers(API_PREFIX+"/products/**").permitAll()
+                                HttpMethod.POST, API_PREFIX + "/users", API_PREFIX + "/auth/token", API_PREFIX + "/auth/introspect", API_PREFIX + "/auth/logout", API_PREFIX + "/auth/refresh").permitAll()
+                                .requestMatchers(API_PREFIX + "/products/**").permitAll()
                                 .anyRequest().authenticated());
 
         httpSecurity.oauth2ResourceServer(
@@ -51,7 +52,7 @@ public class SecurityConfig {
                         oauth2.jwt(jwtConfigurer ->
                                 jwtConfigurer.decoder(customJwtDecoder)
                                         .jwtAuthenticationConverter(jwtAuthenticationConverter()))
-                .authenticationEntryPoint(new JwtAuthenticationEntryPoint()) //authentication fail
+                                .authenticationEntryPoint(new JwtAuthenticationEntryPoint()) //authentication fail
         );
         // Tắt csrf
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
