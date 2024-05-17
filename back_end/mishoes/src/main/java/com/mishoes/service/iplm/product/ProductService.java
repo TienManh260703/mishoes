@@ -62,7 +62,9 @@ public class ProductService implements IProductService {
     public String deleteProduct(String id) {
         Optional<Product> productOptional = productRepository.findById(id);
         if (productOptional.isPresent()) {
-            productRepository.deleteById(productOptional.get().getId());
+            Product product = productOptional.get();
+            product.setStatus(1);
+            productRepository.save(product);
             return "Product deleted";
         }
         return "Delete failed product";

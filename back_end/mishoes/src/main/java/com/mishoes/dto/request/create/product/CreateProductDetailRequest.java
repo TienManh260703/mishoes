@@ -1,5 +1,6 @@
 package com.mishoes.dto.request.create.product;
 
+import com.mishoes.enums.EnumStatus;
 import jakarta.validation.constraints.Min;
 import lombok.*;
 import lombok.experimental.FieldDefaults;

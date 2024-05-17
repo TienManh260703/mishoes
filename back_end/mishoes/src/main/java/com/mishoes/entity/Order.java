@@ -44,12 +44,14 @@ public class Order {
     @Column(name = "shipping_date")
     LocalDate shippingDate;
     @Column(name = "money_ship", nullable = false)
-    private Double moneyShip;
+     Double moneyShip;
     @Column(name = "receipt_date")
     LocalDateTime receiptDate;
     @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 50)
-    private EnumStatus status;
+     EnumStatus status;
+
+     Integer deleted;
 
     @PrePersist
     protected void onCreate() {

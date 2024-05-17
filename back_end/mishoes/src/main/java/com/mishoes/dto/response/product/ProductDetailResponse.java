@@ -19,7 +19,6 @@ public class ProductDetailResponse {
     Float price;
     @JsonProperty(namespace = "import_price")
     Float importPrice;
-    @Min(value = 0 , message = "Quantity must br greater than or equal to 0" )
     Integer quantity;
     String description;
     String notes;
