@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Component
 @Getter
 @Setter
-public class BrandMapper {
+public class BrandMapper  {
 
     public Brand  toBrand(BrandRequest dto){
         return  Brand.builder()

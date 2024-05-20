@@ -73,10 +73,9 @@ public class OrderService implements IOrderService {
         User existingUser = userRepository.findById(request.getUserId()).orElseThrow(() -> {
             throw new DataNotFoundException("User not found !");
         });
-
-
-
-        return null;
+        // Xử lý và kiểm tra ngày
+        orderMapper.updateOrder(existingOrder, request);
+        return orderMapper.toOrderResponse(orderRepository.save(existingOrder));
     }
 
     @Override

@@ -13,7 +13,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "cart_detail")
 @Entity
-public class CartDetail extends BaseEntity {
+public class CartDetail  extends BaseEntity{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_detail_id")
     ProductDetail productDetailId;

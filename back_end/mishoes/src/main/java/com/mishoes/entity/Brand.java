@@ -14,7 +14,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level =  AccessLevel.PRIVATE)
 @Table(name = "brand")
 @Entity
-public class Brand extends BaseEntity {
+public class Brand  extends BaseEntity{
     @Column(length = 50, nullable = false)
     String code;
     @Column(length = 250, nullable = false , unique = true)

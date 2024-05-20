@@ -17,7 +17,7 @@ import java.util.Date;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "invalidated_token")
-public class InvalidatedToken {
+public class InvalidatedToken  {
     @Id
     String id;
     @Column(name = "expiry_time")

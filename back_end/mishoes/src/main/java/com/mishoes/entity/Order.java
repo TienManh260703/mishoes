@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "_order")
 @Entity
-public class Order {
+public class Order  {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
