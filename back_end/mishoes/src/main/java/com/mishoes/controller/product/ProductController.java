@@ -18,7 +18,6 @@ import java.util.List;
 @RequestMapping("${api.prefix}/products")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@CrossOrigin("*")
 public class ProductController {
     ProductService productService;
     ProductMapper productMapper;
